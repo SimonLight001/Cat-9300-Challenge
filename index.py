@@ -1,5 +1,6 @@
 from flask import Flask
 import requests
+import pysnmp
 
 app = Flask(__name__)
 
