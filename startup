@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo -- Stopping and Killing Previous Instances --
+
+docker stop 9300-challenge
+
+docker rm 9300-challenge
+
+echo -- Building Container --
+
+docker build --tag 9300-challenge .
+
+echo -- Container Finished Building --
+
+echo -- Staring Container --
+
+docker run --name 9300-challenge -p 80:80 9300-challenge
