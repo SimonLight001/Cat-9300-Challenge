@@ -1,0 +1,3 @@
+﻿OID,Team,Severity,Message,Message_Explanation,Component,Recommended Action
+cpsIfViolationAction,Security,3,Port security violation,,,
+BGP-2-INSUFMEM,Network,2,  Insufficient memory for [chars] entry,  The requested operation could not be accomplished because of a low\n\ memory condition.,,"  ""Reduce other system activity to ease memory demands. If conditions\n\ warrant upgrade to a larger memory configuration."""
