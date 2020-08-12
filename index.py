@@ -2,6 +2,7 @@ from flask import Flask, request
 import requests
 import pysnmp
 from webexteamssdk import WebexTeamsAPI, Webhook
+import csv
 #from easysnmp import Session
 
 
@@ -17,7 +18,7 @@ def main_page():
         SNMP_Update(data)
         return 'Successful Update'
 
-def CSV_Reading(snmp_push)
+def CSV_Reading(snmp_push):
     #FOR RHYS' TESTING: snmp_push = input("What's the test SNMP input: ")
     with open ('stripped_sys_messages.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -25,16 +26,47 @@ def CSV_Reading(snmp_push)
         found = False
         for row in csv_reader:
             if row[0] == snmp_push:
-                return(snmp_push + " is in line: " + str(column_number) + ". The " + row[1] + " team should be alerted")
+                return row[1], row[2], row[3], row[4], row[5], row[6]
+                #return team, severity, message, message_expl, component, action
                 found = True
             else:
-                line_count+=1
+                column_number+=1
         if found == False:
-            return("This is an error not in our logs")
+            return "", "", "", "", "", ""
+            #print("This is an error not in our logs")
+
 
 def SNMP_Update(data):
-    message_space(data)
-    return True
+    team, severity, message, explanation, component, action = CSV_Reading(data)
+    if team == "Network":
+        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTg4YmJkYzAtZDY2My0xMWVhLTgxMTgtMTFjNTkwNThlZjQ3"
+        markdown_txt = "*New SNMP message:*"
+        api.messages.create(room_id, markdown=markdown_txt)
+        severity = "Severity: " + severity
+        api.messages.create(room_id, text=severity)
+        api.messages.create(room_id, text=message)
+        api.messages.create(room_id, text=explanation)
+        api.messages.create(room_id, text=component)
+        api.messages.create(room_id, text=action)
+        return("success")
+
+    elif team == "Security":
+        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTI0ZjM2ZDAtZDY2My0xMWVhLWE2ODUtN2Y5YWJjMDM4M2Ix"
+        markdown_txt = "*New SNMP message:*"
+        api.messages.create(room_id, markdown=markdown_txt)
+        severity = "Severity: " + severity
+        api.messages.create(room_id, text=severity)
+        api.messages.create(room_id, text=message)
+        api.messages.create(room_id, text=explanation)
+        api.messages.create(room_id, text=component)
+        api.messages.create(room_id, text=action)
+        return("success")
+    else:
+        return("team/snmp not understood")
+
+    #OLD CODE
+    #message_space(data)
+    #return True
 
 
 def message_space(txt):
