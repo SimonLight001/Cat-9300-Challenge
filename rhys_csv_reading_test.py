@@ -2,7 +2,6 @@ import csv
 from webexteamssdk import WebexTeamsAPI, Webhook
 
 snmp_push = input("What's the test SNMP input: ")
-severity_append = "Severity: "
 #CSV_Reading(snmp_push)
 api = WebexTeamsAPI(access_token='NjExNTI0MmMtYWUwMi00NDk0LWJmMzAtZDA5NzA3ZGVkMDdhYzI0Y2MzNDUtYzYz_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f')
 
