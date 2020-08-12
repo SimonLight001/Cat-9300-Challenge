@@ -27,6 +27,8 @@ def CSV_Reading(snmp_push)
             if row[0] == snmp_push:
                 return(snmp_push + " is in line: " + str(column_number) + ". The " + row[1] + " team should be alerted")
                 found = True
+            else:
+                line_count+=1
         if found == False:
             return("This is an error not in our logs")
 
