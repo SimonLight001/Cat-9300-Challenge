@@ -21,11 +21,11 @@ def CSV_Reading(snmp_push)
     #FOR RHYS' TESTING: snmp_push = input("What's the test SNMP input: ")
     with open ('stripped_sys_messages.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
-        line_count = 1
+        column_number = 1
         found = False
         for row in csv_reader:
             if row[0] == snmp_push:
-                return(snmp_push + " is in line: " + str(line_count) + ". The " + row[1] + " team should be alerted")
+                return(snmp_push + " is in line: " + str(column_number) + ". The " + row[1] + " team should be alerted")
                 found = True
         if found == False:
             return("This is an error not in our logs")
