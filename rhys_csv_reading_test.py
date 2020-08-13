@@ -1,10 +1,21 @@
 import csv
 from webexteamssdk import WebexTeamsAPI, Webhook
+import time
+import random
 
-snmp_push = input("What's the test SNMP input: ")
-#CSV_Reading(snmp_push)
+#snmp_push = input("What's the test SNMP input: ") <-- old code used before snmp_generator()
 api = WebexTeamsAPI(access_token='NjExNTI0MmMtYWUwMi00NDk0LWJmMzAtZDA5NzA3ZGVkMDdhYzI0Y2MzNDUtYzYz_PF84_1eb65fdf-9643-417f-9974-ad72cae0e10f')
 
+global team, severity, message, explanation, component, action
+
+def snmp_generator():
+    while True:
+        snmp_selection = ['cpsIfViolationAction', 'BGP-2-INSUFMEM', 'badsnmpvalue']
+        snmp_push = random.choice(snmp_selection)
+        print(snmp_push)
+        team, severity, message, explanation, component, action = CSV_Reading(snmp_push)
+        send_message(team, severity, message, explanation, component, action)
+        time.sleep(22)
 
 def CSV_Reading(snmp_push):
     #FOR RHYS' TESTING: snmp_push = input("What's the test SNMP input: ")
@@ -23,7 +34,9 @@ def CSV_Reading(snmp_push):
             return "", "", "", "", "", ""
             #print("This is an error not in our logs")
 
-team, severity, message, explanation, component, action = CSV_Reading(snmp_push)
+#team, severity, message, explanation, component, action = CSV_Reading(snmp_push)
+
+
 def send_message(team, severity, message, explanation, component, action):
     room_id = ""
     if team == "Network":
@@ -43,4 +56,6 @@ def send_message(team, severity, message, explanation, component, action):
     api.messages.create(room_id, text=action)
     return "Messages sent"
 
-send_message(team, severity, message, explanation, component, action)
+
+snmp_generator()
+#send_message(team, severity, message, explanation, component, action)
