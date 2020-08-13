@@ -15,7 +15,7 @@ def CSV_Reading(snmp_push):
         for row in csv_reader:
             if row[0] == snmp_push:
                 return row[1], row[2], row[3], row[4], row[5], row[6]
-                #return team, severity, message, message_expl, component, action
+                # ^^ above returns team, severity, message, message_expl, component, action
                 found = True
             else:
                 column_number+=1
@@ -24,8 +24,15 @@ def CSV_Reading(snmp_push):
             #print("This is an error not in our logs")
 
 team, severity, message, explanation, component, action = CSV_Reading(snmp_push)
-if team == "Network":
-    room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTg4YmJkYzAtZDY2My0xMWVhLTgxMTgtMTFjNTkwNThlZjQ3"
+def send_message(team, severity, message, explanation, component, action):
+    room_id = ""
+    if team == "Network":
+        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTg4YmJkYzAtZDY2My0xMWVhLTgxMTgtMTFjNTkwNThlZjQ3"
+    elif team == "Security":
+        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTI0ZjM2ZDAtZDY2My0xMWVhLWE2ODUtN2Y5YWJjMDM4M2Ix"
+    else:
+        print("team/snmp not understood")
+        return "team/snmp not understood"#breaks the def as nothing found in csv
     markdown_txt = "*New SNMP message:*"
     api.messages.create(room_id, markdown=markdown_txt)
     severity = "Severity: " + severity
@@ -34,16 +41,6 @@ if team == "Network":
     api.messages.create(room_id, text=explanation)
     api.messages.create(room_id, text=component)
     api.messages.create(room_id, text=action)
+    return "Messages sent"
 
-elif team == "Security":
-    room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTI0ZjM2ZDAtZDY2My0xMWVhLWE2ODUtN2Y5YWJjMDM4M2Ix"
-    markdown_txt = "*New SNMP message:*"
-    api.messages.create(room_id, markdown=markdown_txt)
-    severity = "Severity: " + severity
-    api.messages.create(room_id, text=severity)
-    api.messages.create(room_id, text=message)
-    api.messages.create(room_id, text=explanation)
-    api.messages.create(room_id, text=component)
-    api.messages.create(room_id, text=action)
-else:
-    print("team/snmp not understood")
+send_message(team, severity, message, explanation, component, action)

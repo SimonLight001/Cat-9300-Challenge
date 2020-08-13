@@ -15,11 +15,30 @@ def main_page():
         return 'This is the status page'
     else:
         data = json.loads(request.data)
-        SNMP_Update(data)
+        team, severity, message, explanation, component, action = CSV_Reading(snmp_push)
+        send_message(team, severity, message, explanation, component, action)
         return 'Successful Update'
 
+def send_message(team, severity, message, explanation, component, action):
+    room_id = ""
+    if team == "Network":
+        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTg4YmJkYzAtZDY2My0xMWVhLTgxMTgtMTFjNTkwNThlZjQ3"
+    elif team == "Security":
+        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTI0ZjM2ZDAtZDY2My0xMWVhLWE2ODUtN2Y5YWJjMDM4M2Ix"
+    else:
+        print("team/snmp not understood")
+        return "team/snmp not understood"#breaks the def as nothing found in csv
+    markdown_txt = "*New SNMP message:*"
+    api.messages.create(room_id, markdown=markdown_txt)
+    severity = "Severity: " + severity
+    api.messages.create(room_id, text=severity)
+    api.messages.create(room_id, text=message)
+    api.messages.create(room_id, text=explanation)
+    api.messages.create(room_id, text=component)
+    api.messages.create(room_id, text=action)
+    return "Messages sent"
+
 def CSV_Reading(snmp_push):
-    #FOR RHYS' TESTING: snmp_push = input("What's the test SNMP input: ")
     with open ('stripped_sys_messages.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         column_number = 1
@@ -34,46 +53,12 @@ def CSV_Reading(snmp_push):
         if found == False:
             return "", "", "", "", "", ""
             #print("This is an error not in our logs")
-
-
-def SNMP_Update(data):
-    team, severity, message, explanation, component, action = CSV_Reading(data)
-    if team == "Network":
-        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTg4YmJkYzAtZDY2My0xMWVhLTgxMTgtMTFjNTkwNThlZjQ3"
-        markdown_txt = "*New SNMP message:*"
-        api.messages.create(room_id, markdown=markdown_txt)
-        severity = "Severity: " + severity
-        api.messages.create(room_id, text=severity)
-        api.messages.create(room_id, text=message)
-        api.messages.create(room_id, text=explanation)
-        api.messages.create(room_id, text=component)
-        api.messages.create(room_id, text=action)
-        return("success")
-
-    elif team == "Security":
-        room_id = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLWVhc3QtMl9hOmlkZW50aXR5TG9va3VwL1JPT00vZTI0ZjM2ZDAtZDY2My0xMWVhLWE2ODUtN2Y5YWJjMDM4M2Ix"
-        markdown_txt = "*New SNMP message:*"
-        api.messages.create(room_id, markdown=markdown_txt)
-        severity = "Severity: " + severity
-        api.messages.create(room_id, text=severity)
-        api.messages.create(room_id, text=message)
-        api.messages.create(room_id, text=explanation)
-        api.messages.create(room_id, text=component)
-        api.messages.create(room_id, text=action)
-        return("success")
-    else:
-        return("team/snmp not understood")
-
     #OLD CODE
     #message_space(data)
     #return True
 
 
-def message_space(txt):
-    roomId = "Y2lzY29zcGFyazovL3VzL1JPT00vYzM4ZDE5NTAtYzgwNC0xMWVhLWEyZTgtYjdhOWFhMmIyM2Uy"
-    print(txt)
-    api.messages.create(roomId, text=txt)
-    return "Complete"
+
 
 #forces to listen to all hosts on port 80
 if __name__ == "__main__":
