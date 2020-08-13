@@ -1,3 +1,5 @@
 ﻿OID,Team,Severity,Message,Message_Explanation,Component,Recommended Action
-cpsIfViolationAction,Security,3,Port security violation,,,
+cpsIfViolationAction,Security,3,Port security violation,,Cisco Port Security,"""Check port to see if "
 BGP-2-INSUFMEM,Network,2,  Insufficient memory for [chars] entry,  The requested operation could not be accomplished because of a low\n\ memory condition.,,"  ""Reduce other system activity to ease memory demands. If conditions\n\ warrant upgrade to a larger memory configuration."""
+NAT64-3-ENOMEM,Network,3,  Memory allocation failed, A attempt to allocate memory has failed.,NAT64,
+AAAA-3-AAAFORKFAIL,Security,3,  Failed to start AAA process. AAA requests  may not be processed., Failed to create the AAA process.,aaa,Free up some memory
